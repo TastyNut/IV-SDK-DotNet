@@ -44,18 +44,18 @@ VALIDATE_OFFSET(sRadarTrace, m_pProperties, 0x5C);
 class CRadar
 {
 public:
-	static inline auto RadarTrace = (sRadarTrace**)AddressSetter::Get("CRadar", "RadarTrace"); // RadarTrace[1500]
-	static inline auto& m_pRadarRingBack = AddressSetter::GetRef<CSprite2d>("CRadar", "m_pRadarRingBack");
-	static inline auto& m_pRadarRingFront = AddressSetter::GetRef<CSprite2d>("CRadar", "m_pRadarRingFront");
-	static inline auto RadarBlipSprites = (CSprite2d**)AddressSetter::Get("CRadar", "RadarBlipSprites"); // RadarBlipSprites[128]
-	static inline auto& iNumCreatedBlipSprites = AddressSetter::GetRef<int>("CRadar", "iNumCreatedBlipSprites");
-	static inline auto& fRange = AddressSetter::GetRef<float>("CRadar", "fRange");
-	static inline auto& vec2DRadarOrigin = AddressSetter::GetRef<CVector2D>("CRadar", "vec2DRadarOrigin");
+	static inline auto RadarTrace = *(sRadarTrace***)AddressSetter::Get("CRadar", "RadarTrace", 3); // RadarTrace[1500]
+	static inline auto& m_pRadarRingBack = **(CSprite2d**)AddressSetter::Get("CRadar", "m_pRadarRingBack", 1);
+	static inline auto& m_pRadarRingFront = (CSprite2d&)*(*(int**)AddressSetter::Get("CRadar", "m_pRadarRingBack", 1) + 1);
+	static inline auto RadarBlipSprites = *(CSprite2d***)AddressSetter::Get("CRadar", "RadarBlipSprites", 3); // RadarBlipSprites[128]
+	static inline auto& iNumCreatedBlipSprites = **(int**)AddressSetter::Get("CRadar", "iNumCreatedBlipSprites", 1);
+	static inline auto& fRange = **(float**)AddressSetter::Get("CRadar", "fRange", 4);
+	static inline auto& vec2DRadarOrigin = **(CVector2D**)AddressSetter::Get("CRadar", "vec2DRadarOrigin", 1);
 
-	static inline auto& iCentreBlip = AddressSetter::GetRef<int32_t>("CRadar", "iCentreBlip");
-	static inline auto& iNorthBlip = AddressSetter::GetRef<int32_t>("CRadar", "iNorthBlip");
-	static inline auto& iSimpleBlip = AddressSetter::GetRef<int32_t>("CRadar", "iSimpleBlip");
-	static inline auto& iBlipHovering = AddressSetter::GetRef<int32_t>("CRadar", "iBlipHovering");
+	static inline auto& iCentreBlip = **(int32_t**)AddressSetter::Get("CRadar", "iCentreBlip", 1);
+	static inline auto& iNorthBlip = **(int32_t**)AddressSetter::Get("CRadar", "iNorthBlip", 2);
+	static inline auto& iSimpleBlip = **(int32_t**)AddressSetter::Get("CRadar", "iSimpleBlip", 1);
+	static inline auto& iBlipHovering = **(int32_t**)AddressSetter::Get("CRadar", "iBlipHovering", 1);
 
 	static void DrawBlips()
 	{
@@ -105,4 +105,4 @@ public:
 	}
 };
 
-auto RadarBlipSpriteFilenames = (const char**)AddressSetter::Get("CRadar", "RadarBlipSpriteFilenames"); // RadarBlipSpriteFilenames[130]
+auto RadarBlipSpriteFilenames = *(const char***)AddressSetter::Get("CRadar", "RadarBlipSpriteFilenames", 1); // RadarBlipSpriteFilenames[130]

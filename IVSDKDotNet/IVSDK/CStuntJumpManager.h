@@ -25,10 +25,10 @@ VALIDATE_OFFSET(CStuntJump, m_bPassed, 0x54);
 class CStuntJumpManager
 {
 public:
-	static inline auto& m_bActive = AddressSetter::GetRef<bool>("CStuntJumpManager", "m_bActive");
-	static inline auto& m_iNumCompleted = AddressSetter::GetRef<uint32_t>("CStuntJumpManager", "m_iNumCompleted");
-	static inline auto& m_iNumJumps = AddressSetter::GetRef<uint32_t>("CStuntJumpManager", "m_iNumJumps");
-	static inline auto& mp_poolStuntJumps = AddressSetter::GetRef<CPool<CStuntJump>*>("CStuntJumpManager", "mp_poolStuntJumps");
+	static inline auto& m_bActive = **(bool**)AddressSetter::Get("CStuntJumpManager", "m_bActive", 2);
+	static inline auto& m_iNumCompleted = **(uint32_t**)AddressSetter::Get("CStuntJumpManager", "m_iNumCompleted", 1);
+	static inline auto& m_iNumJumps = **(uint32_t**)AddressSetter::Get("CStuntJumpManager", "m_iNumJumps");
+	static inline auto& mp_poolStuntJumps = **(CPool<CStuntJump>***)AddressSetter::Get("CStuntJumpManager", "mp_poolStuntJumps");
 
 	static bool Save()
 	{

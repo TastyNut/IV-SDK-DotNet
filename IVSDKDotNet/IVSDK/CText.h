@@ -10,4 +10,4 @@ public:
 		return ((const wchar_t* (__thiscall*)(CText*, uint32_t, const char*))(AddressSetter::Get("CText", "Get_2")))(this, hash, Ident);
 	}
 };
-auto& TheText = AddressSetter::GetRef<CText>("CText", "TheText");
+auto& TheText = **(CText**)AddressSetter::Get("CText", "TheText");

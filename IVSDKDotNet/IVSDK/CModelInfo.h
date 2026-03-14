@@ -99,12 +99,14 @@ public:
 
 	void SetAnimGroup(char* group)
 	{
-		((void(__thiscall*)(CBaseModelInfo*, char*))(AddressSetter::Get("CBaseModelInfo", "SetAnimGroup")))(this, group);
+		static void(__thiscall* fn)(CBaseModelInfo*, char*) = injector::GetBranchDestination(AddressSetter::Get("CBaseModelInfo", "SetAnimGroup")).get();
+		fn(this, group);
 	}
 
 	void SetTexDictionary(char* txd)
 	{
-		((void(__thiscall*)(CBaseModelInfo*, char*))(AddressSetter::Get("CBaseModelInfo", "SetTexDictionary")))(this, txd);
+		static void(__thiscall* fn)(CBaseModelInfo*, char*) = injector::GetBranchDestination(AddressSetter::Get("CBaseModelInfo", "SetTexDictionary")).get();
+		fn(this, txd);
 	}
 };
 VALIDATE_SIZE(CBaseModelInfo, 0x60);
@@ -213,10 +215,11 @@ public:
 
 	void SetSecondaryAnimGroup(char* group)
 	{
-		((void(__thiscall*)(CVehicleModelInfo*, char*))(AddressSetter::Get("CVehicleModelInfo", "SetSecondaryAnimGroup")))(this, group);
+		static void(__thiscall* fn)(CVehicleModelInfo*, char*) = injector::GetBranchDestination(AddressSetter::Get("CVehicleModelInfo", "SetSecondaryAnimGroup")).get();
+		fn(this, group);
 	}
 
-	static inline CRGBA* ms_vehicleColourTable = (CRGBA*)AddressSetter::Get("CVehicleModelInfo", "ms_vehicleColourTable"); // ms_vehicleColourTable[196]
+	static inline CRGBA* ms_vehicleColourTable = *(CRGBA**)AddressSetter::Get("CVehicleModelInfo", "ms_vehicleColourTable", 3); // ms_vehicleColourTable[196]
 };
 VALIDATE_SIZE(CVehicleModelInfo, 0x3D0);
 VALIDATE_OFFSET(CVehicleModelInfo, m_nHandlingId, 0x8C);
@@ -230,7 +233,7 @@ VALIDATE_OFFSET(CVehicleModelInfo, m_nAnimIndex2, 0xC0);
 class CModelInfo
 {
 public:
-	static inline CBaseModelInfo** ms_modelInfoPtrs = (CBaseModelInfo**)AddressSetter::Get("CModelInfo", "ms_modelInfoPtrs"); // ms_modelInfoPtrs[31000]
+	static inline CBaseModelInfo** ms_modelInfoPtrs = *(CBaseModelInfo***)AddressSetter::Get("CModelInfo", "ms_modelInfoPtrs", 3); // ms_modelInfoPtrs[31000]
 
 	static CBaseModelInfo* GetModelInfo(uint32_t hashKey, int* index)
 	{

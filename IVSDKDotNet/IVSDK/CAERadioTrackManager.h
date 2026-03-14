@@ -19,10 +19,10 @@ VALIDATE_OFFSET(CRadioStation, m_bFrozen, 0x1927);
 class CAERadioTrackManager
 {
 public:
-	static inline auto& m_bLazlowStationLocked = AddressSetter::GetRef<bool>("CAERadioTrackManager", "m_bLazlowStationLocked");
-	static inline auto& m_bTaxiGarageRadioState = AddressSetter::GetRef<bool>("CAERadioTrackManager", "m_bTaxiGarageRadioState");
-	static inline auto& m_nNumRadioStations = AddressSetter::GetRef<uint32_t>("CAERadioTrackManager", "m_nNumRadioStations");
-	static inline auto m_aRadioStations = (CRadioStation**)AddressSetter::Get("CAERadioTrackManager", "m_aRadioStations"); // CRadioStation*[30]
+	static inline auto& m_bLazlowStationLocked = **(bool**)AddressSetter::Get("CAERadioTrackManager", "m_bLazlowStationLocked", 2);
+	static inline auto& m_bTaxiGarageRadioState = **(bool**)AddressSetter::Get("CAERadioTrackManager", "m_bTaxiGarageRadioState", 1);
+	static inline auto& m_nNumRadioStations = **(uint32_t**)AddressSetter::Get("CAERadioTrackManager", "m_nNumRadioStations", 3);
+	static inline auto  m_aRadioStations = *(CRadioStation***)AddressSetter::Get("CAERadioTrackManager", "m_aRadioStations", 2); // CRadioStation*[30]
 
 	static CRadioStation* GetRadioStation(int id)
 	{

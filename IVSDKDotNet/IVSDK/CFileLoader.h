@@ -1,12 +1,12 @@
 class CFileLoader
 {
 public:
-	static inline char*& sAmbientDataPath = AddressSetter::GetRef<char*>("CFileLoader", "sAmbientDataPath"); // common:/DATA/Ambient.dat
-	static inline char*& sGameRpfPath = AddressSetter::GetRef<char*>("CFileLoader", "sGameRpfPath"); // platform:/data/game.rpf
-	static inline char*& sScenariosDatPath = AddressSetter::GetRef<char*>("CFileLoader", "sScenariosDatPath"); // common:/DATA/Scenarios.dat
-	static inline char*& sButtonsTxdPath = AddressSetter::GetRef<char*>("CFileLoader", "sButtonsTxdPath"); // platform:/textures/buttons_360
-	static inline char*& sProceduralDatPath = AddressSetter::GetRef<char*>("CFileLoader", "sProceduralDatPath"); // common:/data/materials
-	static inline char*& sStreamIniPath = AddressSetter::GetRef<char*>("CFileLoader", "sStreamIniPath"); // platform:/stream.ini
+	static inline char*& sAmbientDataPath = *(char**)AddressSetter::Get("CFileLoader", "sAmbientDataPath", 1); // common:/DATA/Ambient.dat
+	static inline char*& sGameRpfPath = *(char**)AddressSetter::Get("CFileLoader", "sGameRpfPath", 1); // platform:/data/game.rpf
+	static inline char*& sScenariosDatPath = *(char**)AddressSetter::Get("CFileLoader", "sScenariosDatPath", 1); // common:/DATA/Scenarios.dat
+	static inline char*& sButtonsTxdPath = *(char**)AddressSetter::Get("CFileLoader", "sButtonsTxdPath", 1); // platform:/textures/buttons_360
+	static inline char*& sProceduralDatPath = *(char**)AddressSetter::Get("CFileLoader", "sProceduralDatPath", 1); // common:/data/materials
+	static inline char*& sStreamIniPath = *(char**)AddressSetter::Get("CFileLoader", "sStreamIniPath", 1); // platform:/stream.ini
 
 	// priority? it's set to 2 and 1 for loading default.dat in TBoGT but 0 everywhere else
 	static void LoadLevel(char* levelName, int nUnk)

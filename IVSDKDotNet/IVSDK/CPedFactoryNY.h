@@ -75,4 +75,4 @@ public:
 
 };
 
-CPedFactoryNY*& PedFactory = AddressSetter::GetRef<CPedFactoryNY*>("CPedFactory", "PedFactory");
+CPedFactoryNY*& PedFactory = **(CPedFactoryNY***)AddressSetter::Get("CPedFactory", "PedFactory", 2);

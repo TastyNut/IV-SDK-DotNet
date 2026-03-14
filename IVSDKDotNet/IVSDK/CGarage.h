@@ -152,29 +152,30 @@ class CGarages
 {
 public:
 
-	static inline auto& bCamShouldBeOutside = AddressSetter::GetRef<bool>("CGarages", "bCamShouldBeOutside");
-	static inline auto& bHasResprayHappened = AddressSetter::GetRef<bool>("CGarages", "bHasResprayHappened");
-	static inline auto& MessageStartTime = AddressSetter::GetRef<uint32_t>("CGarages", "MessageStartTime");
-	static inline auto& MessageEndTime = AddressSetter::GetRef<uint32_t>("CGarages", "MessageEndTime");
-	static inline auto& LastGaragePlayerWasIn = AddressSetter::GetRef<int32_t>("CGarages", "LastGaragePlayerWasIn");
-	static inline auto& LastTimeHelpMessage = AddressSetter::GetRef<uint32_t>("CGarages", "LastTimeHelpMessage");
+	static inline auto& bCamShouldBeOutside = **(bool**)AddressSetter::Get("CGarages", "bCamShouldBeOutside", 2);
+	static inline auto& bHasResprayHappened = **(bool**)AddressSetter::Get("CGarages", "bHasResprayHappened", 2);
+	static inline auto& MessageStartTime = **(uint32_t**)AddressSetter::Get("CGarages", "MessageStartTime", 19);
+	static inline auto& MessageEndTime = **(uint32_t**)AddressSetter::Get("CGarages", "MessageEndTime", 13);
+	static inline auto& LastGaragePlayerWasIn = **(int32_t**)AddressSetter::Get("CGarages", "LastGaragePlayerWasIn", 1);
+	static inline auto& LastTimeHelpMessage = **(uint32_t**)AddressSetter::Get("CGarages", "LastTimeHelpMessage", 1);
 
-	static inline auto& BombsAreFree = AddressSetter::GetRef<bool>("CGarages", "BombsAreFree");
-	static inline auto& RespraysAreFree = AddressSetter::GetRef<bool>("CGarages", "RespraysAreFree");
-	static inline auto& NoResprays = AddressSetter::GetRef<bool>("CGarages", "NoResprays");
+	static inline auto& BombsAreFree = **(bool**)AddressSetter::Get("CGarages", "BombsAreFree", 3);
+	static inline auto& RespraysAreFree = **(bool**)AddressSetter::Get("CGarages", "RespraysAreFree", 1);
+	static inline auto& NoResprays = **(bool**)AddressSetter::Get("CGarages", "NoResprays", 1);
 
-	static inline auto& NumGarages = AddressSetter::GetRef<uint32_t>("CGarages", "NumGarages");
-	static inline auto& NumSafehouseGarages = AddressSetter::GetRef<uint32_t>("CGarages", "NumSafehouseGarages");
-	static inline CGarage* aGarages = (CGarage*)AddressSetter::Get("CGarages", "aGarages"); // aGarages[40]
-	static inline CStoredCar* aCarsInSafeHouse = (CStoredCar*)AddressSetter::Get("CGarages", "aCarsInSafeHouse"); // aCarsInSafeHouse[20]
+	static inline auto& NumGarages = **(uint32_t**)AddressSetter::Get("CGarages", "NumGarages", 5);
+	static inline auto& NumSafehouseGarages = **(uint32_t**)AddressSetter::Get("CGarages", "NumSafehouseGarages", 1);
+	static inline CGarage* aGarages = *(CGarage**)AddressSetter::Get("CGarages", "aGarages", 4); // aGarages[40]
+	static inline CStoredCar* aCarsInSafeHouse = *(CStoredCar**)AddressSetter::Get("CGarages", "aCarsInSafeHouse", 1); // aCarsInSafeHouse[20]
 
 	static bool CameraShouldBeOutside()
 	{
-		return ((bool(__cdecl*)())(AddressSetter::Get("CGarages", "CameraShouldBeOutside")))();
+		return !bCamShouldBeOutside;
 	}
 	static void CloseHideOutGaragesBeforeSave(bool unk)
 	{
-		((void(__cdecl*)(bool))(AddressSetter::Get("CGarages", "CloseHideOutGaragesBeforeSave")))(unk);
+		static void(__cdecl* fn)(bool) = injector::GetBranchDestination(AddressSetter::Get("CGarages", "CloseHideOutGaragesBeforeSave")).get();
+        fn(unk);
 	}
 	static void Init()
 	{

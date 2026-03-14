@@ -59,7 +59,7 @@ public:
 
 	CCam* GetCamOfType(int type, int unk)
 	{
-		return ((CCam*(__thiscall*)(CCam*, int, int))(AddressSetter::Get("CCam", "GetCamOfType")))(this, type, unk);
+		return ((CCam*(__thiscall*)(CCam*, int, int))(AddressSetter::Get("CCam", "GetCamOfType", 0, 1)))(this, type, unk);
 	}
 	CCam* Activate()
 	{

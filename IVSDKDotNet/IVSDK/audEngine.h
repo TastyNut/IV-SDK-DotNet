@@ -11,9 +11,9 @@ public:
 class audEngine
 {
 public:
-	static inline audConfig& m_pSoundsConfig = AddressSetter::GetRef<audConfig>("audEngine", "m_pSoundsConfig");
-	static inline audConfig& m_pCurvesConfig = AddressSetter::GetRef<audConfig>("audEngine", "m_pCurvesConfig");
-	static inline audConfig& m_pGameConfig = AddressSetter::GetRef<audConfig>("audEngine", "m_pGameConfig");
+	static inline audConfig& m_pSoundsConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pSoundsConfig", 1);
+	static inline audConfig& m_pCurvesConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pCurvesConfig", 1);
+	static inline audConfig& m_pGameConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pGameConfig", 1);
 
 	// this is used after every category patch, but the parameter is 1 in ep2 and 0 in the rest
 	void SetUnknown(float unk1)
@@ -22,4 +22,4 @@ public:
 	}
 };
 
-audEngine& AudioEngine = AddressSetter::GetRef<audEngine>("audEngine", "AudioEngine");
+audEngine& AudioEngine = **(audEngine**)AddressSetter::Get("audEngine", "AudioEngine", 1);

@@ -1,16 +1,16 @@
 class CAudioZones
 {
 public:
-	static inline auto& m_NumSpheres = AddressSetter::GetRef<uint32_t>("CAudioZones", "m_NumSpheres");
-	static inline auto m_aActiveSpheres = (int32_t*)AddressSetter::Get("CAudioZones", "m_aActiveSpheres");
-	static inline auto& m_NumActiveSpheres = AddressSetter::GetRef<uint32_t>("CAudioZones", "m_NumActiveSpheres");
-	static inline auto& m_NumBoxes = AddressSetter::GetRef<uint32_t>("CAudioZones", "m_NumBoxes");
-	static inline auto m_aActiveBoxes = (int32_t*)AddressSetter::Get("CAudioZones", "m_aActiveBoxes");
-	static inline auto& m_NumActiveBoxes = AddressSetter::GetRef<uint32_t>("CAudioZones", "m_NumActiveBoxes");
+	static inline auto& m_NumSpheres = **(uint32_t**)AddressSetter::Get("CAudioZones", "m_NumSpheres", 2);
+	static inline auto m_aActiveSpheres = *(int32_t**)AddressSetter::Get("CAudioZones", "m_aActiveSpheres", 3);
+	static inline auto& m_NumActiveSpheres = **(uint32_t**)AddressSetter::Get("CAudioZones", "m_NumActiveSpheres", 2);
+	static inline auto& m_NumBoxes = **(uint32_t**)AddressSetter::Get("CAudioZones", "m_NumBoxes", 2);
+	static inline auto m_aActiveBoxes = *(int32_t**)AddressSetter::Get("CAudioZones", "m_aActiveBoxes", 3);
+	static inline auto& m_NumActiveBoxes = **(uint32_t**)AddressSetter::Get("CAudioZones", "m_NumActiveBoxes", 2);
 
 	static void Update(bool bForceUpdate, CVector TestCoors)
 	{
 		((void(__cdecl*)(bool, CVector))(AddressSetter::Get("CAudioZones", "Update")))(bForceUpdate, TestCoors);
 	}
 };
-auto& LastUpdateCoors = AddressSetter::GetRef<CVector>("CAudioZones", "LastUpdateCoors");
+auto& LastUpdateCoors = **(CVector**)AddressSetter::Get("CAudioZones", "LastUpdateCoors", 4);

@@ -7,4 +7,4 @@ public:
 	}
 };
 
-static CEpisodes*& TheEpisodes = AddressSetter::GetRef<CEpisodes*>("CEpisodes", "TheEpisodes");
+static CEpisodes*& TheEpisodes = **(CEpisodes***)AddressSetter::Get("CEpisodes", "TheEpisodes", 2);

@@ -1,5 +1,5 @@
 class CReplay
 {
 public:
-	static inline auto& Mode = AddressSetter::GetRef<uint32_t>("CReplay", "Mode");
+	static inline auto& Mode = **(uint32_t**)AddressSetter::Get("CReplay", "Mode", 2);
 };

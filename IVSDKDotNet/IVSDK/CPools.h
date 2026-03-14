@@ -25,26 +25,26 @@ class CScriptStore;
 class CPools
 {
 public:
-	static inline auto& ms_pPedPool = AddressSetter::GetRef<CPool<CPed>*>("CPools", "ms_pPedPool");
-	static inline auto& ms_pVehiclePool = AddressSetter::GetRef<CPool<CVehicle>*>("CPools", "ms_pVehiclePool");
-	static inline auto& ms_pBuildingPool = AddressSetter::GetRef<CPool<CBuilding>*>("CPools", "ms_pBuildingPool");
-	static inline auto& ms_pObjectPool = AddressSetter::GetRef<CPool<CObject>*>("CPools", "ms_pObjectPool");
-	static inline auto& ms_pCameraPool = AddressSetter::GetRef<CPool<CCam>*>("CPools", "ms_pCameraPool");
-	static inline auto& ms_pTaskPool = AddressSetter::GetRef<CPool<CTask>*>("CPools", "ms_pTaskPool");
-	static inline auto& ms_pInteriorInstPool = AddressSetter::GetRef<CPool<CInteriorInst>*>("CPools", "ms_pInteriorInstPool");
-	static inline auto& ms_pVehicleStructPool = AddressSetter::GetRef<CPool<CVehicleStructure>*>("CPools", "ms_pVehicleStructPool");
-	static inline auto& ms_pPedMoveBlendPool = AddressSetter::GetRef<CPool<CPedMoveBlendOnFoot>*>("CPools", "ms_pPedMoveBlendPool");
-	static inline auto& ms_pDummyPedPool = AddressSetter::GetRef<CPool<CDummyPed>*>("CPools", "ms_pDummyPedPool");
-	static inline auto& ms_pDummyTaskPool = AddressSetter::GetRef<CPool<CDummyTask>*>("CPools", "ms_pDummyTaskPool");
-	static inline auto& ms_pUnkPedDataPool = AddressSetter::GetRef<CPool<tPedData>*>("CPools", "ms_pUnkPedDataPool");
-	static inline auto& ms_pPedIntelligencePool = AddressSetter::GetRef<CPool<CPedIntelligenceNY>*>("CPools", "ms_pPedIntelligencePool");
-	static inline auto& ms_pAnimBlenderPool = AddressSetter::GetRef<CPool<CAnimBlender>*>("CPools", "ms_pAnimBlenderPool");
-	static inline auto& ms_pFragInstNMGtaPool = AddressSetter::GetRef<CPool<fragInstNMGta>*>("CPools", "ms_pFragInstNMGtaPool");
-	static inline auto& ms_pPedDataPool = AddressSetter::GetRef<CPool<CPedDataNY>*>("CPools", "ms_pPedDataPool");
-	static inline auto& ms_pQuadTreeNodePool = AddressSetter::GetRef<CPool<CQuadTreeNode>*>("CPools", "ms_pQuadTreeNodePool");
-	static inline auto& ms_pTxdPool = AddressSetter::GetRef<CPool<TxdDef>*>("CPools", "ms_pTxdPool");
-	static inline auto& ms_pIplPool = AddressSetter::GetRef<CPool<IplDef>*>("CPools", "ms_pIplPool");
-	static inline auto& ms_pPedTargettingPool = AddressSetter::GetRef<CPool<CPedTargetting>*>("CPools", "ms_pPedTargettingPool");
+	static inline auto& ms_pPedPool = **(CPool<CPed>***)AddressSetter::Get("CPools", "ms_pPedPool", 1);
+	static inline auto& ms_pVehiclePool = **(CPool<CVehicle>***)AddressSetter::Get("CPools", "ms_pVehiclePool", 2);
+	static inline auto& ms_pBuildingPool = **(CPool<CBuilding>***)AddressSetter::Get("CPools", "ms_pBuildingPool", 2);
+	static inline auto& ms_pObjectPool = **(CPool<CObject>***)AddressSetter::Get("CPools", "ms_pObjectPool", 2);
+	static inline auto& ms_pCameraPool = **(CPool<CCam>***)AddressSetter::Get("CPools", "ms_pCameraPool", 2);
+	static inline auto& ms_pTaskPool = **(CPool<CTask>***)AddressSetter::Get("CPools", "ms_pTaskPool", 2);
+	static inline auto& ms_pInteriorInstPool = **(CPool<CInteriorInst>***)AddressSetter::Get("CPools", "ms_pInteriorInstPool", 2);
+	static inline auto& ms_pVehicleStructPool = **(CPool<CVehicleStructure>***)AddressSetter::Get("CPools", "ms_pVehicleStructPool", 2);
+	static inline auto& ms_pPedMoveBlendPool = **(CPool<CPedMoveBlendOnFoot>***)AddressSetter::Get("CPools", "ms_pPedMoveBlendPool", 2);
+	static inline auto& ms_pDummyPedPool = **(CPool<CDummyPed>***)AddressSetter::Get("CPools", "ms_pDummyPedPool", 1);
+	static inline auto& ms_pDummyTaskPool = **(CPool<CDummyTask>***)AddressSetter::Get("CPools", "ms_pDummyTaskPool", 2);
+	static inline auto& ms_pUnkPedDataPool = **(CPool<tPedData>***)AddressSetter::Get("CPools", "ms_pUnkPedDataPool", 2);
+	static inline auto& ms_pPedIntelligencePool = **(CPool<CPedIntelligenceNY>***)AddressSetter::Get("CPools", "ms_pPedIntelligencePool", 2);
+	static inline auto& ms_pAnimBlenderPool = **(CPool<CAnimBlender>***)AddressSetter::Get("CPools", "ms_pAnimBlenderPool", 2);
+	static inline auto& ms_pFragInstNMGtaPool = **(CPool<fragInstNMGta>***)AddressSetter::Get("CPools", "ms_pFragInstNMGtaPool", 2);
+	static inline auto& ms_pPedDataPool = **(CPool<CPedDataNY>***)AddressSetter::Get("CPools", "ms_pPedDataPool", 25);
+	static inline auto& ms_pQuadTreeNodePool = **(CPool<CQuadTreeNode>***)AddressSetter::Get("CPools", "ms_pQuadTreeNodePool", 2);
+	static inline auto& ms_pTxdPool = **(CPool<TxdDef>***)AddressSetter::Get("CPools", "ms_pTxdPool", 2);
+	static inline auto& ms_pIplPool = **(CPool<IplDef>***)AddressSetter::Get("CPools", "ms_pIplPool", 2);
+	static inline auto& ms_pPedTargettingPool = **(CPool<CPedTargetting>***)AddressSetter::Get("CPools", "ms_pPedTargettingPool", 1);
 
-	static inline auto& ms_pScriptStorePool = AddressSetter::GetRef<CPool<CScriptStore>*>("CPools", "ms_pScriptStorePool");
+	static inline auto& ms_pScriptStorePool = **(CPool<CScriptStore>***)AddressSetter::Get("CPools", "ms_pScriptStorePool", 2);
 };

@@ -9,7 +9,8 @@ public:
 	CTaskComplexPlayerSettingsTask(uint32_t unkFromPed)
 	{
 		// this was inlined
-		((void(__thiscall*)(CTaskComplex*))(AddressSetter::Get("CTaskComplexPlayerSettingsTask", "CTaskComplexPlayerSettingsTask")))(this); // CTaskComplex::CTaskComplex
+		static void(__thiscall* fn)(CTaskComplex*) = injector::GetBranchDestination(AddressSetter::Get("CTaskComplexPlayerSettingsTask", "CTaskComplexPlayerSettingsTask")).get(); // CTaskComplex::CTaskComplex
+		fn(this);
 		m_nUnk0 = 0;
 		m_nUnkNeg1 = -1;
 		m_nUnkNeg1_2 = -1;

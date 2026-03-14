@@ -87,7 +87,7 @@ namespace plugin
 		drawingEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "drawingEvent"), drawingEvent::MainHook);
 		processAutomobileEvent::callAddress = DoHook(AddressSetter::Get("Hooks", "processAutomobileEvent"), processAutomobileEvent::MainHook);
 		processPadEvent::callAddress = DoHook(AddressSetter::Get("Hooks", "processPadEvent"), processPadEvent::MainHook);
-		processCameraEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "processCameraEvent"), processCameraEvent::MainHook);
+		processCameraEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "processCameraEvent", 9), processCameraEvent::MainHook);
 		mountDeviceEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "mountDeviceEvent"), mountDeviceEvent::MainHook);
 		ingameStartupEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "ingameStartupEvent"), ingameStartupEvent::MainHook);
 	}

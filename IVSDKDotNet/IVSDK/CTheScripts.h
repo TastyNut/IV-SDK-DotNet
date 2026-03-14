@@ -10,14 +10,14 @@ struct building_swap_struct
 class CTheScripts
 {
 public:
-	static inline auto BuildingSwapArray = (building_swap_struct*)AddressSetter::Get("CTheScripts", "BuildingSwapArray"); // BuildingSwapArray[25]
+	static inline auto BuildingSwapArray = *(building_swap_struct**)AddressSetter::Get("CTheScripts", "BuildingSwapArray", 3); // BuildingSwapArray[25]
 
-	static inline auto& m_aGlobalVariables = AddressSetter::GetRef<uint32_t*>("CTheScripts", "m_aGlobalVariables"); // m_aGlobalVariables[65535]?
-	static inline auto& m_pCurrentThread = AddressSetter::GetRef<uint32_t>("CTheScripts", "m_pCurrentThread");
+	static inline auto& m_aGlobalVariables = **(uint32_t***)AddressSetter::Get("CTheScripts", "m_aGlobalVariables", 2); // m_aGlobalVariables[65535]?
+	static inline auto& m_pCurrentThread = **(uint32_t**)AddressSetter::Get("CTheScripts", "m_pCurrentThread", 1);
 
 	static uint32_t FindNativeAddress(uint32_t nativeHash)
 	{
-		uint32_t funcPtr = AddressSetter::Get("CTheScripts", "FindNativeAddress");
+		static void* funcPtr = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "FindNativeAddress")).get();
 		
 		uint32_t nativePtr;
 		_asm
@@ -43,7 +43,8 @@ public:
 
 	static int RegisterNativeNoChecks(uint32_t hash, LPVOID funcPtr)
 	{
-		return ((int (__stdcall*)(uint32_t, LPVOID))(AddressSetter::Get("CTheScripts", "RegisterNativeNoChecks")))(hash, funcPtr);
+		static int(__stdcall* fn)(uint32_t, LPVOID) = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "RegisterNativeNoChecks")).get();
+		return fn(hash, funcPtr);
 	}
 	static int RegisterNative(uint32_t hash, LPVOID funcPtr)
 	{
@@ -52,12 +53,14 @@ public:
 
 	static const char* GetNameOfCurrentScript()
 	{
-		return ((const char* (__cdecl*)())(AddressSetter::Get("CTheScripts", "GetNameOfCurrentScript")))();
+		static const char* (__cdecl* fn)() = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "GetNameOfCurrentScript")).get();
+		return fn();
 	}
 
 	static bool IsPlayerOnAMission()
 	{
-		return ((bool(__cdecl*)())(AddressSetter::Get("CTheScripts", "IsPlayerOnAMission")))();
+		static bool(__cdecl* fn)() = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "IsPlayerOnAMission")).get();
+		return fn();
 	}
 	static void GivePedScriptedTask(int handle, CTask* task, int unk)
 	{

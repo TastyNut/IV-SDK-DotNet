@@ -16,7 +16,8 @@ public:
 	CTaskComplexWanderStandard(uint32_t moveState, float initialDir, bool bSensibly, float targetRadius, uint32_t unk1) : CTaskComplexWander(moveState, initialDir, bSensibly, targetRadius, unk1)
 	{
 		// this was probably inlined
-		*(uint32_t*)this = AddressSetter::Get("CTaskComplexWanderStandard", "CTaskComplexWanderStandard"); // set vftable
+		static uint32_t vtable = **(uint32_t**)AddressSetter::Get("CTaskComplexWanderStandard", "CTaskComplexWanderStandard"); // set vftable
+		*(uint32_t*)this = vtable;
 		this->m_fUnk = 0;
 	}
 };

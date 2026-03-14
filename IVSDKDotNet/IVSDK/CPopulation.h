@@ -1,13 +1,13 @@
 class CPopulation
 {
 public:
-	static inline auto& ms_nNumCop = AddressSetter::GetRef<int32_t>("CPopulation", "ms_nNumCop");
-	static inline auto& ms_nNumEmergency = AddressSetter::GetRef<int32_t>("CPopulation", "ms_nNumEmergency");
-	static inline auto& m_AllRandomPedsThisType = AddressSetter::GetRef<int32_t>("CPopulation", "m_AllRandomPedsThisType");
-	static inline auto& PedDensityMultiplier = AddressSetter::GetRef<float>("CPopulation", "PedDensityMultiplier");
-
-	static inline auto& ScenarioPedDensityMultiplier = AddressSetter::GetRef<float>("CPopulation", "ScenarioPedDensityMultiplier");
-	static inline auto& ScenarioPedDensityMultiplier2 = AddressSetter::GetRef<float>("CPopulation", "ScenarioPedDensityMultiplier2");
+	static inline auto& ms_nNumCop = **(int32_t**)AddressSetter::Get("CPopulation", "ms_nNumCop", 2);
+	static inline auto& ms_nNumEmergency = **(int32_t**)AddressSetter::Get("CPopulation", "ms_nNumEmergency", 2);
+	static inline auto& m_AllRandomPedsThisType = **(int32_t**)AddressSetter::Get("CPopulation", "m_AllRandomPedsThisType", 2);
+	static inline auto& PedDensityMultiplier = **(float**)AddressSetter::Get("CPopulation", "PedDensityMultiplier", 4);
+	
+	static inline auto& ScenarioPedDensityMultiplier = **(float**)AddressSetter::Get("CPopulation", "ScenarioPedDensityMultiplier", 4);
+	static inline auto& ScenarioPedDensityMultiplier2 = *(*(float**)AddressSetter::Get("CPopulation", "ScenarioPedDensityMultiplier", 4) + 1);
 
 	static void Initialise()
 	{

@@ -30,8 +30,8 @@ public:
 	// Array which hold the actual CPickup instances:							1080: (int[]) 0x12DEB60 (0xEDEB60)  || 1070: (int[]) 0x1549150 (0x1149150)
 	// Array which seems to hold the pickup types individually for some reason: 1080: (char[]) 0x12DEBA4 (0xEDEBA4) || 1070: (char[]) 0x1549194 (0x1149194)
 
-	static inline auto Pickups =		(CPickup*)AddressSetter::Get("CPickups", "Pickups");
-	static inline auto PickupTypes =	(uint8_t*)AddressSetter::Get("CPickups", "PickupTypes");
+	static inline auto Pickups =		*(CPickup**)AddressSetter::Get("CPickups", "Pickups", 2);
+	static inline auto PickupTypes =	(*(uint8_t**)AddressSetter::Get("CPickups", "Pickups", 2) + 0x44);
 
 	// 1080: 0xF43631
 	// 1070: 0xF2A064

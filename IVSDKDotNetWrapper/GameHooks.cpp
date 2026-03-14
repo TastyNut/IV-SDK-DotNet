@@ -36,7 +36,7 @@ bool UnmanagedGameHooks::TryCreateHook(const std::string& section, const std::st
 
 		assert(!scan.empty());
 
-		mhStatus = MH_CreateHook((LPVOID*)scan.get_first(0), detour, ppOriginal);
+		mhStatus = MH_CreateHook((LPVOID*)scan.get(0).get<void*>(0), detour, ppOriginal);
 
 	}
 	else

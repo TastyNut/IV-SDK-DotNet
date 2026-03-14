@@ -1,7 +1,11 @@
 #include <filesystem>
+#include <unordered_map>
+
+#include "injector/injector.hpp"
 
 namespace AddressSetter
 {
+	static std::unordered_map<std::string, uint32_t> gAddresses;
 	static uint32_t gCurrentExeVersion;
 	static uint32_t gBaseAddress;
 	static bool bAddressesRead = false;
@@ -128,7 +132,7 @@ namespace AddressSetter
 		// Get string from section
 		return gLoadedConfig->get(section, key, std::string());
 	}
-	static inline uint32_t GetAddressFromConfig(const std::string& section, const std::string& key)
+	static inline uint32_t GetAddressFromConfig(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
 	{
 		if (!bAddressesRead)
 			Init();
@@ -143,7 +147,12 @@ namespace AddressSetter
 			return 0;
 		}
 
-		if (str.find("0x") == 0 || str.find("0X") == 0)
+        //get cached address
+		if(gAddresses.find(section + key) != gAddresses.end())
+		{
+			return gAddresses[section + key];
+		}
+		else if (str.find("0x") == 0 || str.find("0X") == 0)
 		{
 			// Try convert string to uint32_t
 			uint32_t num = static_cast<uint32_t>(std::stoul(str, nullptr, 16));
@@ -152,18 +161,46 @@ namespace AddressSetter
 		}
 		else
 		{
-			// Try getting the address from the pattern
-			auto scan = hook::pattern(str);
+			hook::pattern scan;
+			if(str.find(",") != str.npos)
+			{
+				std::stringstream ss{str};
+				while(std::getline(ss, str, ','))
+				{
+					auto start = str.find_first_not_of(" \t");
+					auto end = str.find_last_not_of(" \t");
+					if(start != std::string::npos)
+					{
+						std::string patternStr = str.substr(start, end - start + 1);
+						scan = hook::pattern(str);
+						if(!scan.empty())
+							break;
+					}
+				}
+			}
+			else
+			{
+				scan = hook::pattern(str);
+			}
 
-			assert(!scan.empty());
+			if(scan.empty())
+			{
+				MessageBoxA(NULL, std::string("Pattern for section ").append(section).append(" and key ").append(key).append(" did not match any address in the game.\nGame version: ").append(std::to_string(gCurrentExeVersion)).c_str(), "IVSDK", MB_ICONERROR);
+				exit(1);
+				return 0;
+			}
 
-			return *(uint32_t*)scan.get_first(0);
+			uint32_t addr = reinterpret_cast<uint32_t>(scan.get(index).get<uint32_t>(offset));
+			// todo: temporary. remove when all offsets are converted into patterns
+			addr -= gBaseAddress;
+			gAddresses[section + key] = addr;
+			return addr;
 		}
-
 		return 0;
 	}
 
 	// Note that the base address is added here and 0x400000 is not subtracted, so rebase your .idb to 0x0 or subtract it yourself
+	// todo: remove when all offsets are converted into patterns
 	template<typename T>
 	static inline T& GetRef(uint32_t addr1070, uint32_t addr1080, uint32_t addr12059)
 	{
@@ -180,6 +217,7 @@ namespace AddressSetter
 		return *reinterpret_cast<T*>(nullptr);
 	}
 
+	// todo: remove when all offsets are converted into patterns
 	template<typename T>
 	static inline T& GetRef(uint32_t addr)
 	{
@@ -190,11 +228,12 @@ namespace AddressSetter
 	}
 
 	template<typename T>
-	static inline T& GetRef(const std::string& section, const std::string& key)
+	static inline T& GetRef(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
 	{
-		return GetRef<T>(GetAddressFromConfig(section, key));
+		return GetRef<T>(GetAddressFromConfig(section, key, offset, index));
 	}
 
+	// todo: remove when all offsets are converted into patterns
 	static inline uint32_t Get(uint32_t addr1070, uint32_t addr1080, uint32_t addr12059)
 	{
 		if (!bAddressesRead)
@@ -209,6 +248,7 @@ namespace AddressSetter
 
 		return 0;
 	}
+	// todo: remove when all offsets are converted into patterns
 	static inline uint32_t Get(uint32_t addr)
 	{
 		if (!bAddressesRead)
@@ -216,9 +256,8 @@ namespace AddressSetter
 
 		return gBaseAddress + addr;
 	}
-	static inline uint32_t Get(const std::string& section, const std::string& key)
+	static inline uint32_t Get(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
 	{
-		return Get(GetAddressFromConfig(section, key));
+		return Get(GetAddressFromConfig(section, key, offset, index));
 	}
-
 }

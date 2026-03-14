@@ -1,5 +1,5 @@
 class CCheat
 {
 public:
-	static inline auto& m_bHasPlayerCheated = AddressSetter::GetRef<bool>("CCheat", "m_bHasPlayerCheated");
+	static inline auto& m_bHasPlayerCheated = **(bool**)AddressSetter::Get("CCheat", "m_bHasPlayerCheated", 2);
 };
