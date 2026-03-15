@@ -94,7 +94,7 @@ namespace plugin
 	void InitWrapper()
 	{
 		// Initialize IV-SDK .NET
-		CLR::CLRBridge::Initialize((uint32_t)plugin::gameVer, AddressSetter::gBaseAddress);
+		CLR::CLRBridge::Initialize((uint32_t)plugin::gameVer, AddressSetter::GetBaseAddress());
 
 		// Subscribe to IV-SDK Events
 		processScriptsEvent::Add(ScriptLoop);
@@ -111,8 +111,7 @@ namespace plugin
 	DWORD WINAPI Initialize(HMODULE hModule)
 	{
 		// Initialize AddressSetter
-		if (!AddressSetter::bAddressesRead)
-			AddressSetter::Init();
+		AddressSetter::Init();
 
 		// Init stuff
 		InitHooks();
