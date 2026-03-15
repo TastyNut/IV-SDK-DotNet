@@ -7,7 +7,8 @@ public:
 	// coords are ratio of screen (0-1)
 	CDrawSpriteDC(CVector2D* bl, CVector2D* tl, CVector2D* br, CVector2D* tr, CRGBA color, CSprite2d sprite)
 	{
-		((void(__thiscall*)(CDrawSpriteDC*, CVector2D*, CVector2D*, CVector2D*, CVector2D*, CRGBA, CSprite2d))(AddressSetter::Get("CDrawSpriteDC", "CDrawSpriteDC")))(this, bl, tl, br, tr, color, sprite);
+		static void(__thiscall* fn)(CDrawSpriteDC*, CVector2D*, CVector2D*, CVector2D*, CVector2D*, CRGBA, CSprite2d) = injector::GetBranchDestination(AddressSetter::Get("CDrawSpriteDC", "CDrawSpriteDC")).get();
+		fn(this, bl, tl, br, tr, color, sprite);
 	}
 };
 VALIDATE_SIZE(CDrawSpriteDC, 0x30);

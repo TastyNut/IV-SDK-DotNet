@@ -124,14 +124,7 @@ namespace AddressSetter
 
 		return true;
 	}
-	static inline std::string GetConfigString(const std::string& section, const std::string& key)
-	{
-		if (!bAddressesRead)
-			Init();
 
-		// Get string from section
-		return gLoadedConfig->get(section, key, std::string());
-	}
 	static inline uint32_t GetAddressFromConfig(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
 	{
 		if (!bAddressesRead)

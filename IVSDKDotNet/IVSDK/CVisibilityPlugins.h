@@ -1,14 +1,14 @@
 class CVisibilityPlugins
 {
 public:
-	static inline float& m_pedLodDistanceHigh = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedLodDistanceHigh");
-	static inline float& m_pedInCarLodDistanceHigh = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedInCarLodDistanceHigh");
-	static inline float& m_pedLodDistanceMed = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedLodDistanceMed");
-	static inline float& m_pedLodDistanceLow = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedLodDistanceLow");
-	static inline float& m_pedLodDistanceVlow = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedLodDistanceVlow");
-	static inline float& m_pedLodDistanceSlod = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_pedLodDistanceSlod"); // all non-mission peds change their modelindex to superlod past this distance
-	static inline float& m_carLodDistanceHigh = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_carLodDistanceHigh");
-	static inline float& m_carLodDistanceMed = AddressSetter::GetRef<float>("CVisibilityPlugins", "m_carLodDistanceMed");
+	static inline float& m_pedLodDistanceHigh = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedLodDistanceHigh", 2);
+	static inline float& m_pedInCarLodDistanceHigh = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedInCarLodDistanceHigh", 2);
+	static inline float& m_pedLodDistanceMed = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedLodDistanceMed", 4);
+	static inline float& m_pedLodDistanceLow = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedLodDistanceLow", 4);
+	static inline float& m_pedLodDistanceVlow = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedLodDistanceVlow", 4);
+	static inline float& m_pedLodDistanceSlod = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_pedLodDistanceSlod", 4); // all non-mission peds change their modelindex to superlod past this distance
+	static inline float& m_carLodDistanceHigh = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_carLodDistanceHigh", 4);
+	static inline float& m_carLodDistanceMed = **(float**)AddressSetter::Get("CVisibilityPlugins", "m_carLodDistanceMed", 2);
 
-	static inline char*& sStipplePath = AddressSetter::GetRef<char*>("CVisibilityPlugins", "sStipplePath"); // platform:/textures
+	static inline char*& sStipplePath = *(char**)AddressSetter::Get("CVisibilityPlugins", "sStipplePath", 1); // platform:/textures
 };

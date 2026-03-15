@@ -11,9 +11,9 @@ public:
 class audEngine
 {
 public:
-	static inline audConfig& m_pSoundsConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pSoundsConfig", 1);
-	static inline audConfig& m_pCurvesConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pCurvesConfig", 1);
-	static inline audConfig& m_pGameConfig = **(audConfig**)AddressSetter::Get("audEngine", "m_pGameConfig", 1);
+	static inline audConfig& m_pSoundsConfig = *(audConfig*)(*(uint8_t**)AddressSetter::Get("audEngine", "AudioEngine", 1) + 0x278);
+	static inline audConfig& m_pCurvesConfig = *(audConfig*)(*(uint8_t**)AddressSetter::Get("audEngine", "AudioEngine", 1) + 0x64);
+	static inline audConfig& m_pGameConfig	 = *(audConfig*)(*(uint8_t**)AddressSetter::Get("audEngine", "AudioEngine", 1) + 0x2D4);
 
 	// this is used after every category patch, but the parameter is 1 in ep2 and 0 in the rest
 	void SetUnknown(float unk1)

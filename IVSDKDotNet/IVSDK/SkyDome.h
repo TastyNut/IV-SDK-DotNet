@@ -43,4 +43,4 @@ namespace rage
 	VALIDATE_OFFSET(SkyDome, m_nDrawStencil, 0x30C);
 	VALIDATE_OFFSET(SkyDome, m_nDrawSunOnly, 0x310);
 }
-rage::SkyDome*& TheSkyDome = AddressSetter::GetRef<rage::SkyDome*>("SkyDome", "TheSkyDome");
+rage::SkyDome*& TheSkyDome = **(rage::SkyDome***)AddressSetter::Get("SkyDome", "TheSkyDome", 1);

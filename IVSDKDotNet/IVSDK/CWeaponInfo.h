@@ -84,7 +84,7 @@ public:
 	uint32_t m_nShotsFired;									// 100-104
 	uint8_t pad4[0xC];										// 104-110
 
-	static inline char** ms_aWeaponNames = (char**)AddressSetter::Get("CWeaponInfo", "ms_aWeaponNames");
+	static inline char** ms_aWeaponNames = *(char***)AddressSetter::Get("CWeaponInfo", "ms_aWeaponNames", 3);
 
 	static CWeaponInfo* GetWeaponInfo(uint32_t weaponID)
 	{
@@ -104,13 +104,15 @@ public:
 	}
 	static int FindWeaponFireType(const char* pString)
 	{
-		return ((int(__cdecl*)(const char*))(AddressSetter::Get("CWeaponInfo", "FindWeaponFireType")))(pString);
+		static int(__cdecl* fn)(const char*) = injector::GetBranchDestination(AddressSetter::Get("CWeaponInfo", "FindWeaponFireType")).get();
+        return fn(pString);
 	}
 	static int FindWeaponDamageType(const char* pString)
 	{
-		return ((int(__cdecl*)(const char*))(AddressSetter::Get("CWeaponInfo", "FindWeaponDamageType")))(pString);
+		static int(__cdecl* fn)(const char*) = injector::GetBranchDestination(AddressSetter::Get("CWeaponInfo", "FindWeaponDamageType")).get();
+        return fn(pString);
 	}
 };
 VALIDATE_SIZE(CWeaponInfo, 0x110);
 
-CWeaponInfo* aWeaponInfo = (CWeaponInfo*)AddressSetter::Get("CWeaponInfo", "aWeaponInfo"); // aWeaponInfo[60]
+CWeaponInfo* aWeaponInfo = *(CWeaponInfo**)AddressSetter::Get("CWeaponInfo", "aWeaponInfo", 2); // aWeaponInfo[60]

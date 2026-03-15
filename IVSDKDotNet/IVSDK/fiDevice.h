@@ -2,7 +2,7 @@ namespace rage
 {
 	class fiDeviceLocal
 	{
-		uint32_t m_pVFTable = AddressSetter::Get("fiDeviceLocal", "m_pVFTable");
+		uint32_t m_pVFTable = **(uint32_t**)AddressSetter::Get("fiDeviceLocal", "m_pVFTable", 1);
 		uint8_t pad[0x20C];
 	};
 	VALIDATE_SIZE(fiDeviceLocal, 0x210);
@@ -10,7 +10,7 @@ namespace rage
 	class fiDevice
 	{
 	public:
-		static inline int& g_nMaxMountPoints = AddressSetter::GetRef<int>("fiDevice", "g_nMaxMountPoints");
+		static inline int& g_nMaxMountPoints = **(int**)AddressSetter::Get("fiDevice", "g_nMaxMountPoints", 2);
 
 		static bool Mount(char* path, fiDeviceLocal* device, bool bUnk1)
 		{
@@ -22,7 +22,7 @@ namespace rage
 		}
 
 	public:
-		uint32_t m_pVFTable = AddressSetter::Get("fiDevice", "m_pVFTable");
+		uint32_t m_pVFTable = **(uint32_t**)AddressSetter::Get("fiDevice", "m_pVFTable", 2);
 		uint8_t pad[0x20C];
 
 		uint32_t SetPath(char* path, bool bAbsolute)

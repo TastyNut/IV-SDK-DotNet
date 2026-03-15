@@ -29,20 +29,7 @@ bool UnmanagedGameHooks::TryCreateHook(const std::string& section, const std::st
 {
 	MH_STATUS mhStatus;
 
-	// Figure out if config is a pattern or a regular memory address
-	if (AddressSetter::IsConfigPattern(section, key))
-	{
-		auto scan = hook::pattern(AddressSetter::GetConfigString(section, key));
-
-		assert(!scan.empty());
-
-		mhStatus = MH_CreateHook((LPVOID*)scan.get(0).get<void*>(0), detour, ppOriginal);
-
-	}
-	else
-	{
-		mhStatus = MH_CreateHook((LPVOID*)AddressSetter::Get(section, key), detour, ppOriginal);
-	}
+	mhStatus = MH_CreateHook((LPVOID*)AddressSetter::Get(section, key), detour, ppOriginal);
 
 	// Validate
 	if (mhStatus != MH_OK)

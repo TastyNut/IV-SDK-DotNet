@@ -36,8 +36,8 @@ enum eLineOfSightFlags
 class CWorld
 {
 public:
-	static inline CPlayerInfo** Players = (CPlayerInfo**)AddressSetter::Get("CWorld", "Players"); // Players[32]
-	static inline int32_t& PlayerInFocus = AddressSetter::GetRef<int32_t>("CWorld", "PlayerInFocus");
+	static inline CPlayerInfo** Players = *(CPlayerInfo***)AddressSetter::Get("CWorld", "Players", 3); // Players[32]
+	static inline int32_t& PlayerInFocus = **(int32_t**)AddressSetter::Get("CWorld", "PlayerInFocus", 2);
 
 	static void Add(CEntity* entity, bool bUnk)
 	{
@@ -51,7 +51,8 @@ public:
 
 	static void RemoveFallenPeds()
 	{
-		((void(__cdecl*)())(AddressSetter::Get("CWorld", "RemoveFallenPeds")))();
+		static void(__cdecl* fn)() = injector::GetBranchDestination(AddressSetter::Get("CWorld", "RemoveFallenPeds")).get();
+		fn();
 	}
 
 	static void RemoveFallenCars()
