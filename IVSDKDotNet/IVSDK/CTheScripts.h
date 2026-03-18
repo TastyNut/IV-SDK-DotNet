@@ -17,16 +17,24 @@ public:
 
 	static uint32_t FindNativeAddress(uint32_t nativeHash)
 	{
-		static void* funcPtr = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "FindNativeAddress")).get();
+		static uint32_t(__stdcall* funcPtr)(uint32_t) = injector::GetBranchDestination(AddressSetter::Get("CTheScripts", "FindNativeAddress")).get();
 		
 		uint32_t nativePtr;
-		_asm
+		if(AddressSetter::GetGameVersion() <= 1080)
 		{
-			push esi
-			mov esi, nativeHash
-			call funcPtr
-			pop esi
-			mov nativePtr, eax
+			// Hash parameter is passed in the esi register on patch 7 and 8
+			_asm
+			{
+				push esi
+				mov esi, nativeHash
+				call funcPtr
+				pop esi
+				mov nativePtr, eax
+			}
+		}
+		else
+		{
+			nativePtr = funcPtr(nativeHash);
 		}
 
 		return nativePtr;

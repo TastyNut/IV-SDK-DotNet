@@ -118,6 +118,8 @@ namespace plugin
 		//gameStartupEvent();
 		InitWrapper();
 
+		SetEvent(hInitializationDone);
+
 		// Keep the plugin alive. I guess.
 		while (!CLR::CLRBridge::CanTerminate)
 			Sleep(1000);
@@ -138,6 +140,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 		case DLL_PROCESS_ATTACH:
 
 			DisableThreadLibraryCalls(hModule);
+
+			plugin::hInitializationDone = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+			if(!plugin::hInitializationDone)
+				return false;
 
 			// Launch thread to initialize the plugin and all that stuff
 			CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)&plugin::Initialize, hModule, 0, nullptr);
