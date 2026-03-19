@@ -17,5 +17,5 @@ namespace rage
 	};
 	VALIDATE_SIZE(grcTextureFactoryPC, 0x70);
 
-	grcTextureFactoryPC*& TextureFactory = AddressSetter::GetRef<grcTextureFactoryPC*>("grcTextureFactoryPC", "TextureFactory");
+	grcTextureFactoryPC*& TextureFactory = **(grcTextureFactoryPC***)AddressSetter::Get("grcTextureFactoryPC", "TextureFactory", 2);
 }

@@ -7,8 +7,8 @@ VALIDATE_SIZE(IplDef, 0x60);
 class CIplStore
 {
 public:
-	static inline CQuadTreeNode*& ms_pQuadTree = AddressSetter::GetRef<CQuadTreeNode*>("CIplStore", "ms_pQuadTree");
-	static inline CPool<IplDef>*& ms_pPool = AddressSetter::GetRef<CPool<IplDef>*>("CIplStore", "ms_pPool"); // dupe of the one in CPools for convenience
+	static inline CQuadTreeNode*& ms_pQuadTree = **(CQuadTreeNode***)AddressSetter::Get("CIplStore", "ms_pQuadTree", 2);
+	static inline CPool<IplDef>*& ms_pPool = **(CPool<IplDef>***)AddressSetter::Get("CIplStore", "ms_pPool", 1); // dupe of the one in CPools for convenience
 
 	static inline void LoadIpls(CVector pos, bool unk)
 	{
@@ -16,12 +16,13 @@ public:
 	}
 	static inline void SetIplsRequired(CVector pos)
 	{
-		((void(__cdecl*)(CVector))(AddressSetter::Get("CIplStore", "SetIplsRequired")))(pos);
+		static void(__cdecl* fn)(CVector) = injector::GetBranchDestination((AddressSetter::Get("CIplStore", "SetIplsRequired"))).get();
+		fn(pos);
 	}
 };
 
-inline bool& gbIplsNeededAtPosn = AddressSetter::GetRef<bool>("CIplStore", "gbIplsNeededAtPosn");
-inline CVector& gvecIplsNeededAtPosn = AddressSetter::GetRef<CVector>("CIplStore", "gvecIplsNeededAtPosn");
+inline bool& gbIplsNeededAtPosn = **(bool**)AddressSetter::Get("CIplStore", "gbIplsNeededAtPosn", 2);
+inline CVector& gvecIplsNeededAtPosn = **(CVector**)AddressSetter::Get("CIplStore", "gvecIplsNeededAtPosn", 4);
 
 inline void SetIfIplIsRequired(CVector2D* pos, IplDef* def)
 {

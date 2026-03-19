@@ -3,13 +3,9 @@ class CImgFileMgr
 public:
 	// TODO: Cleanup this class and create a proper "CdImgFile" class or something which stores all the stuff in the arrays below
 
-	// 1080: 1399810 (0xF99810)
-	// 1070: 121DFE8 (0xE1DFE8)
-	static inline auto ms_ImgFiles_FileNames = (char*)AddressSetter::Get("CImgFileMgr", "ms_ImgFiles_FileNames");
+	static inline auto ms_ImgFiles_FileNames = *(char**)AddressSetter::Get("CImgFileMgr", "ms_ImgFiles_FileNames", 2);
 
-	// 1080: 1399898 (0xF99898)
-	// 1070: 121E070 (0xE1E070)
-	static inline auto ms_ImgFiles_FileHandles = (int32_t*)AddressSetter::Get("CImgFileMgr", "ms_ImgFiles_FileHandles");
+	static inline auto ms_ImgFiles_FileHandles = *(int32_t**)AddressSetter::Get("CImgFileMgr", "ms_ImgFiles_FileHandles", 2);
 
 public:
 	static int CloseImageFile(int index)

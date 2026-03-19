@@ -18,8 +18,8 @@ public:
 	VALIDATE_OFFSET(AnimAssocDefinition, pUnknown, 0x40);
 	VALIDATE_OFFSET(AnimAssocDefinition, aAnimDesc, 0x44);
 
-	static inline auto& ms_aAnimAssocDefinitions = AddressSetter::GetRef<AnimAssocDefinition*>("CAnimManager", "ms_aAnimAssocDefinitions");
-	static inline auto& ms_numAnimAssocDefinitions = AddressSetter::GetRef<int32_t>("CAnimManager", "ms_numAnimAssocDefinitions");
+	static inline auto& ms_aAnimAssocDefinitions = **(AnimAssocDefinition***)AddressSetter::Get("CAnimManager", "ms_aAnimAssocDefinitions", 2);
+	static inline auto& ms_numAnimAssocDefinitions = **(int32_t**)AddressSetter::Get("CAnimManager", "ms_numAnimAssocDefinitions", 2);
 
 	static void Initialise()
 	{

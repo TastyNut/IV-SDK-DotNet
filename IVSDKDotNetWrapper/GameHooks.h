@@ -155,6 +155,7 @@ public:
 
 private:
 	static bool TryCreateHook(const std::string& section, const std::string& key, LPVOID detour, LPVOID* ppOriginal);
+	static bool TryCreateHookAtCall(const std::string& section, const std::string& key, LPVOID detour, LPVOID* ppOriginal);
 
 private:
 	static inline AddSceneLightT* originalAddSceneLight = nullptr;

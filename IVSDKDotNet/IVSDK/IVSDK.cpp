@@ -87,14 +87,14 @@ namespace plugin
 		drawingEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "drawingEvent"), drawingEvent::MainHook);
 		processAutomobileEvent::callAddress = DoHook(AddressSetter::Get("Hooks", "processAutomobileEvent"), processAutomobileEvent::MainHook);
 		processPadEvent::callAddress = DoHook(AddressSetter::Get("Hooks", "processPadEvent"), processPadEvent::MainHook);
-		processCameraEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "processCameraEvent"), processCameraEvent::MainHook);
+		processCameraEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "processCameraEvent", 9), processCameraEvent::MainHook);
 		mountDeviceEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "mountDeviceEvent"), mountDeviceEvent::MainHook);
 		ingameStartupEvent::returnAddress = DoHook(AddressSetter::Get("Hooks", "ingameStartupEvent"), ingameStartupEvent::MainHook);
 	}
 	void InitWrapper()
 	{
 		// Initialize IV-SDK .NET
-		CLR::CLRBridge::Initialize((uint32_t)plugin::gameVer, AddressSetter::gBaseAddress);
+		CLR::CLRBridge::Initialize((uint32_t)plugin::gameVer, AddressSetter::GetBaseAddress());
 
 		// Subscribe to IV-SDK Events
 		processScriptsEvent::Add(ScriptLoop);
@@ -111,13 +111,14 @@ namespace plugin
 	DWORD WINAPI Initialize(HMODULE hModule)
 	{
 		// Initialize AddressSetter
-		if (!AddressSetter::bAddressesRead)
-			AddressSetter::Init();
+		AddressSetter::Init();
 
 		// Init stuff
 		InitHooks();
 		//gameStartupEvent();
 		InitWrapper();
+
+		SetEvent(hInitializationDone);
 
 		// Keep the plugin alive. I guess.
 		while (!CLR::CLRBridge::CanTerminate)
@@ -139,6 +140,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 		case DLL_PROCESS_ATTACH:
 
 			DisableThreadLibraryCalls(hModule);
+
+			plugin::hInitializationDone = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+			if(!plugin::hInitializationDone)
+				return false;
 
 			// Launch thread to initialize the plugin and all that stuff
 			CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)&plugin::Initialize, hModule, 0, nullptr);

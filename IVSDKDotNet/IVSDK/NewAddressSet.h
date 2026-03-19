@@ -1,18 +1,63 @@
 #include <filesystem>
+#include <unordered_map>
 
-namespace AddressSetter
+#include "injector/injector.hpp"
+
+class AddressSetter
 {
-	static uint32_t gCurrentExeVersion;
-	static uint32_t gBaseAddress;
-	static bool bAddressesRead = false;
+public:
+	static inline void Init()
+	{
+		if (ms_bInitialized)
+			return;
 
-	static INI<>* gLoadedConfig = nullptr;
+		ms_nBaseAddress = (uint32_t)GetModuleHandle(NULL);
 
+		DetermineVersion();
+
+		if (!LoadCurrentVersionConfig())
+		{
+			MessageBoxA(NULL, std::string("Config file was not found! Please copy the \"IVSDK\" folder in the zip archive you downloaded to your game's root directory.").c_str(), "IVSDK", MB_ICONERROR);
+			exit(1);
+			return;
+		}
+
+		ms_bInitialized = true;
+
+        // this sucks but I can't think of a better way to do it
+		// it needs to be done outside dllmain and this is the function that's most likely to be called first after injection
+		if(!ms_pPreInitGameOrig)
+			ms_pPreInitGameOrig = injector::MakeCALL(Get("Hooks", "PreInitGame"), PreInitGameHook).get();
+	}
+
+	static inline uint32_t Get(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
+	{
+		return GetAddressFromConfig(section, key, offset, index);
+	}
+
+	static inline uint32_t GetBaseAddress()
+	{
+		if (!ms_bInitialized)
+			Init();
+
+		return ms_nBaseAddress;
+	}
+
+	static inline uint32_t GetGameVersion()
+	{
+		if (!ms_nCurrentExeVersion)
+			ms_nCurrentExeVersion = GetVersionFromEXE();
+
+		return ms_nCurrentExeVersion;
+	}
+
+private:
 	static inline bool DoesFileExists(const std::string& name)
 	{
 		std::ifstream f(name.c_str());
 		return f.good();
 	}
+
 	static inline uint32_t GetVersionFromEXE()
 	{
 		TCHAR szFileName[MAX_PATH];
@@ -24,18 +69,18 @@ namespace AddressSetter
 		LPBYTE lpBuffer = NULL;
 		DWORD  verSize = GetFileVersionInfoSize(szFileName, &verHandle);
 
-		if (verSize != NULL)
+		if(verSize != NULL)
 		{
 			LPSTR verData = new char[verSize];
 
-			if (GetFileVersionInfo(szFileName, verHandle, verSize, verData))
+			if(GetFileVersionInfo(szFileName, verHandle, verSize, verData))
 			{
-				if (VerQueryValue(verData, TEXT("\\"), (VOID FAR * FAR*) & lpBuffer, &size))
+				if(VerQueryValue(verData, TEXT("\\"), (VOID FAR * FAR*) & lpBuffer, &size))
 				{
-					if (size)
+					if(size)
 					{
 						VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)lpBuffer;
-						if (verInfo->dwSignature == 0xfeef04bd)
+						if(verInfo->dwSignature == 0xfeef04bd)
 						{
 							std::string str = std::to_string((verInfo->dwFileVersionMS >> 16) & 0xffff);
 							str += std::to_string((verInfo->dwFileVersionMS >> 0) & 0xffff);
@@ -55,10 +100,10 @@ namespace AddressSetter
 	static inline void DetermineVersion()
 	{
 		// Determine the game version
-		gCurrentExeVersion = GetVersionFromEXE();
+		ms_nCurrentExeVersion = GetVersionFromEXE();
 
 		// Set the game version
-		plugin::gameVer = (plugin::eGameVersion)gCurrentExeVersion;
+		plugin::gameVer = (plugin::eGameVersion)ms_nCurrentExeVersion;
 	}
 
 	static inline bool LoadCurrentVersionConfig()
@@ -66,159 +111,168 @@ namespace AddressSetter
 		int numArgs;
 		LPWSTR* args = CommandLineToArgvW(GetCommandLineW(), &numArgs);
 
-		if (args == NULL)
+		if(args == NULL)
 		{
 			MessageBoxA(NULL, "Failed to parse command line of current process!", "IVSDK", MB_ICONERROR);
 			exit(1);
 			return false;
 		}
 
-		std::filesystem::path rootPath =	std::filesystem::path(std::wstring(args[0])).remove_filename();
-		std::string finalPath =				rootPath.append("IVSDK").append(std::to_string(gCurrentExeVersion).append(".ini")).string();
+		std::filesystem::path rootPath = std::filesystem::path(std::wstring(args[0])).remove_filename();
+		std::string versionPath = rootPath.append("IVSDK").append(std::to_string(ms_nCurrentExeVersion).append(".ini")).string();
+		std::string patternsPath = rootPath.replace_filename("Patterns.ini").string();
+		ms_Addresses.ConfigPath = versionPath;
 
 		LocalFree(args);
 
-		if (!DoesFileExists(finalPath))
-			return false;
-
-		gLoadedConfig = new INI<>(finalPath, true);
-		return true;
-	}
-	static inline void Init()
-	{
-		if (bAddressesRead)
-			return;
-
-		gBaseAddress = (uint32_t)GetModuleHandle(NULL);
-
-		// Dertemine the game version
-		DetermineVersion();
-
-		// Load config file according to the game version
-		if (!LoadCurrentVersionConfig())
+		if (!DoesFileExists(versionPath) && !DoesFileExists(patternsPath))
 		{
-			MessageBoxA(NULL, std::string("Config file for version ").append(std::to_string(gCurrentExeVersion)).append(" was not found! IVSDK might not be compatible with this version yet.").c_str(), "IVSDK", MB_ICONERROR);
-			exit(1);
-			return;
+			return false;
 		}
 
-		bAddressesRead = true;
-	}
-
-	static inline bool IsConfigPattern(const std::string& section, const std::string& key)
-	{
-		if (!bAddressesRead)
-			Init();
-
-		// Get string from section
-		std::string str = gLoadedConfig->get(section, key, std::string());
-
-		if (str.empty())
-			return false;
-		if (str.find("0x") == 0 || str.find("0X") == 0)
-			return false;
+		ms_pLoadedConfig[0] = new INI<>(versionPath, true);
+		ms_pLoadedConfig[1] = new INI<>(patternsPath, true);
 
 		return true;
 	}
-	static inline std::string GetConfigString(const std::string& section, const std::string& key)
+
+
+	static inline uint32_t GetAddressFromConfig(const std::string& section, const std::string& key, uint32_t offset = 0, uint32_t index = 0)
 	{
-		if (!bAddressesRead)
+		if(!ms_bInitialized)
 			Init();
 
 		// Get string from section
-		return gLoadedConfig->get(section, key, std::string());
-	}
-	static inline uint32_t GetAddressFromConfig(const std::string& section, const std::string& key)
-	{
-		if (!bAddressesRead)
-			Init();
-
-		// Get string from section
-		std::string str = gLoadedConfig->get(section, key, std::string());
-
-		if (str.empty())
+		std::string str = ms_pLoadedConfig[0]->get(section, key, std::string());
+		if(str.empty())
 		{
-			MessageBoxA(NULL, std::string("Address for section ").append(section).append(" and key ").append(key).append(" was not found in the config file for version ").append(std::to_string(gCurrentExeVersion)).append("!").c_str(), "IVSDK", MB_ICONERROR);
-			exit(1);
-			return 0;
+            str = ms_pLoadedConfig[1]->get(section, key, std::string());
+			if(str.empty())
+			{
+				MessageBoxA(NULL, std::string("Address for section ").append(section).append(" and key ").append(key).append(" was not found in the config file for version ").append(std::to_string(ms_nCurrentExeVersion)).append("!").c_str(), "IVSDK", MB_ICONERROR);
+				exit(1);
+				return 0;
+			}
 		}
 
-		if (str.find("0x") == 0 || str.find("0X") == 0)
+		// Get cached address
+		auto mapKey = AddressMapKey{section, key};
+		if(ms_Addresses.Map.find(mapKey) != ms_Addresses.Map.end())
 		{
-			// Try convert string to uint32_t
-			uint32_t num = static_cast<uint32_t>(std::stoul(str, nullptr, 16));
-
-			return num;
+			return ms_nBaseAddress + ms_Addresses.Map[mapKey];
 		}
+		// Get relative offset
+		else if(str.find("0x") == 0 || str.find("0X") == 0)
+		{
+			uint32_t relAddr = static_cast<uint32_t>(std::stoul(str, nullptr, 16));
+			return ms_nBaseAddress + relAddr;
+		}
+		// Get pattern(s)
 		else
 		{
-			// Try getting the address from the pattern
-			auto scan = hook::pattern(str);
+			hook::pattern scan;
+			if(str.find(",") != str.npos)
+			{
+				std::stringstream ss{str};
+				while(std::getline(ss, str, ','))
+				{
+					auto start = str.find_first_not_of(" \t");
+					auto end = str.find_last_not_of(" \t");
+					if(start != std::string::npos)
+					{
+						std::string patternStr = str.substr(start, end - start + 1);
+						scan = hook::pattern(str);
+						if(!scan.empty())
+							break;
+					}
+				}
+			}
+			else
+			{
+				scan = hook::pattern(str);
+			}
 
-			assert(!scan.empty());
+			if(scan.empty())
+			{
+				MessageBoxA(NULL, std::string("Pattern for section ").append(section).append(" and key ").append(key).append(" did not match any address in the game.\nGame version: ").append(std::to_string(ms_nCurrentExeVersion)).c_str(), "IVSDK", MB_ICONERROR);
+				exit(1);
+				return 0;
+			}
 
-			return *(uint32_t*)scan.get_first(0);
+			uint32_t addr = reinterpret_cast<uint32_t>(scan.get(index).get<uint32_t>(offset));
+			ms_Addresses.Map[mapKey] = addr - ms_nBaseAddress;
+			return addr;
 		}
-
 		return 0;
 	}
 
-	// Note that the base address is added here and 0x400000 is not subtracted, so rebase your .idb to 0x0 or subtract it yourself
-	template<typename T>
-	static inline T& GetRef(uint32_t addr1070, uint32_t addr1080, uint32_t addr12059)
+	// Block game initialization until the plugin is initialized
+	static inline void(*ms_pPreInitGameOrig)();
+	static void PreInitGameHook()
 	{
-		if (!bAddressesRead)
-			Init();
+		WaitForSingleObject(plugin::hInitializationDone, INFINITE);
+		ms_pPreInitGameOrig();
+	}
 
-		switch(plugin::gameVer)
+private:
+	struct AddressMapKey
+	{
+		std::string Section;
+		std::string Key;
+
+		bool operator==(const AddressMapKey& rhs) const
 		{
-			case plugin::VERSION_1080: return *reinterpret_cast<T*>(gBaseAddress + addr1080);
-			case plugin::VERSION_1070: return *reinterpret_cast<T*>(gBaseAddress + addr1070);
-			case plugin::VERSION_12059: return *reinterpret_cast<T*>(gBaseAddress + addr12059);
+			return Section == rhs.Section && Key == rhs.Key;
+		}
+	};
+
+	struct AddressMapKeyHasher
+	{
+		std::size_t operator()(const AddressMapKey& key) const
+		{
+			std::size_t a = std::hash<std::string>{}(key.Section);
+			std::size_t b = std::hash<std::string>{}(key.Key);
+
+			return a ^ (b << 1);
+		}
+	};
+
+	// Wrapper whose sole purpose is calling a custom destructor when the game exits to save the cached addresses
+	struct MapWrapper
+	{
+		MapWrapper() = default;
+
+		~MapWrapper()
+		{
+			std::vector<std::pair<AddressMapKey, uint32_t>> sortedMap{Map.begin(), Map.end()};
+			std::sort(sortedMap.begin(), sortedMap.end(), [](const auto& a, const auto& b)
+			{
+				return a.first.Section < b.first.Section;
+			});
+
+			std::ofstream oFile(ConfigPath);
+			oFile << "; This is an auto-generated file. Do not edit it.\n";
+			std::string lastSection;
+			for(const auto& pair : sortedMap)
+			{
+				if(lastSection != pair.first.Section)
+				{
+                    lastSection = pair.first.Section;
+					oFile << "[" << pair.first.Section << "]\n";
+				}
+				oFile << pair.first.Key << "=0x" << std::hex << pair.second << '\n';
+			}
 		}
 
-		return *reinterpret_cast<T*>(nullptr);
-	}
+		std::unordered_map<AddressMapKey, uint32_t, AddressMapKeyHasher> Map;
+		std::string ConfigPath;
+	};
 
-	template<typename T>
-	static inline T& GetRef(uint32_t addr)
-	{
-		if (!bAddressesRead)
-			Init();
+	// For current version and fallback
+	static inline INI<>* ms_pLoadedConfig[2] = {nullptr, nullptr};
 
-		return *reinterpret_cast<T*>(gBaseAddress + addr);
-	}
-
-	template<typename T>
-	static inline T& GetRef(const std::string& section, const std::string& key)
-	{
-		return GetRef<T>(GetAddressFromConfig(section, key));
-	}
-
-	static inline uint32_t Get(uint32_t addr1070, uint32_t addr1080, uint32_t addr12059)
-	{
-		if (!bAddressesRead)
-			Init();
-
-		switch(plugin::gameVer)
-		{
-			case plugin::VERSION_1080: return gBaseAddress + addr1080;
-			case plugin::VERSION_1070: return gBaseAddress + addr1070;
-			case plugin::VERSION_12059: return gBaseAddress + addr12059;
-		}
-
-		return 0;
-	}
-	static inline uint32_t Get(uint32_t addr)
-	{
-		if (!bAddressesRead)
-			Init();
-
-		return gBaseAddress + addr;
-	}
-	static inline uint32_t Get(const std::string& section, const std::string& key)
-	{
-		return Get(GetAddressFromConfig(section, key));
-	}
-
-}
+	static inline MapWrapper ms_Addresses;
+	static inline uint32_t ms_nBaseAddress;
+	static inline uint32_t ms_nCurrentExeVersion;
+	static inline bool ms_bInitialized = false;
+};

@@ -1,10 +1,10 @@
 class CCutsceneMgr
 {
 public:
-	static inline uint32_t& ms_running = AddressSetter::GetRef<uint32_t>("CCutsceneMgr", "ms_running");
+	static inline uint32_t& ms_running = **(uint32_t**)AddressSetter::Get("CCutsceneMgr", "ms_running", 2);
 
 	static bool IsRunning()
 	{
-		return ((bool(__cdecl*)())(AddressSetter::Get("CCutsceneMgr", "IsRunning")))();
+		return ms_running != 0;
 	}
 };

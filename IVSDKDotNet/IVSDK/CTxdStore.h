@@ -12,28 +12,33 @@ class CTxdStore
 public:
 	// txds are rage::pgDictionary<rage::grcTexture>
 	// see 0x487460, loads fonts and buttons
-
-	static inline rage::pgDictionary<rage::grcTexturePC>*& ms_pStoredTxd = AddressSetter::GetRef<rage::pgDictionary<rage::grcTexturePC>*>("CTxdStore", "ms_pStoredTxd");
+	
+	static inline rage::pgDictionary<rage::grcTexturePC>*& ms_pStoredTxd = **(rage::pgDictionary<rage::grcTexturePC>***)AddressSetter::Get("CTxdStore", "ms_pStoredTxd", 1);
 
 	static void AddRef(int slot)
 	{
-		((void(__cdecl*)(int))(AddressSetter::Get("CTxdStore", "AddRef")))(slot);
+		static void(__cdecl* fn)(int) = injector::GetBranchDestination(AddressSetter::Get("CTxdStore", "AddRef")).get();
+		fn(slot);
 	}
 	static int AddTxdSlot(char* sName)
 	{
-		return ((int(__cdecl*)(char*))(AddressSetter::Get("CTxdStore", "AddTxdSlot")))(sName);
+		static int(__cdecl* fn)(char*) = injector::GetBranchDestination(AddressSetter::Get("CTxdStore", "AddTxdSlot")).get();
+		return fn(sName);
 	}
 	static int FindTxdSlot(uint32_t nHash)
 	{
-		return ((int(__cdecl*)(uint32_t))(AddressSetter::Get("CTxdStore", "FindTxdSlot")))(nHash);
+		static int(__cdecl * fn)(uint32_t) = injector::GetBranchDestination(AddressSetter::Get("CTxdStore", "FindTxdSlot")).get();
+        return fn(nHash);
 	}
 	static int FindTxdSlot(char* sName)
 	{
-		return ((int(__cdecl*)(char*))(AddressSetter::Get("CTxdStore", "FindTxdSlot_2")))(sName);
+		static int(__cdecl* fn)(char*) = injector::GetBranchDestination(AddressSetter::Get("CTxdStore", "FindTxdSlot_2")).get();
+        return fn(sName);
 	}
 	static bool LoadTxd(int slot, char* sName)
 	{
-		return ((bool(__cdecl*)(int, char*))(AddressSetter::Get("CTxdStore", "LoadTxd")))(slot, sName);
+		static int(__cdecl* fn)(int, char*) = injector::GetBranchDestination(AddressSetter::Get("CTxdStore", "LoadTxd")).get();
+		return fn(slot, sName);
 	}
 	static void PushCurrentTxd()
 	{

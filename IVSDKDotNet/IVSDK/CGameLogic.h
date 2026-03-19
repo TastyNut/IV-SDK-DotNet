@@ -1,8 +1,8 @@
 class CGameLogic
 {
 public:
-	static inline auto& bPenaltyForDeathApplies = AddressSetter::GetRef<bool>("CGameLogic", "bPenaltyForDeathApplies");
-	static inline auto& bPenaltyForArrestApplies = AddressSetter::GetRef<bool>("CGameLogic", "bPenaltyForArrestApplies");
+	static inline auto& bPenaltyForDeathApplies = **(bool**)AddressSetter::Get("CGameLogic", "bPenaltyForDeathApplies", 2);
+	static inline auto& bPenaltyForArrestApplies = **(bool**)AddressSetter::Get("CGameLogic", "bPenaltyForArrestApplies", 2);
 
 	static bool Save()
 	{

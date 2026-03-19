@@ -22,11 +22,11 @@ VALIDATE_OFFSET(CZone, PopulationType, 0x20);
 class CTheZones
 {
 public:
-	static inline auto& TotalNumberOfMapZones = AddressSetter::GetRef<uint32_t>("CTheZones", "TotalNumberOfMapZones");
-	static inline auto MapZoneArray = (CZone*)AddressSetter::Get("CTheZones", "MapZoneArray");
+	static inline auto& TotalNumberOfMapZones = **(uint32_t**)AddressSetter::Get("CTheZones", "TotalNumberOfMapZones", 2);
+	static inline auto MapZoneArray = *(CZone**)AddressSetter::Get("CTheZones", "MapZoneArray", 1);
 
-	static inline auto& ZonesRevealed = AddressSetter::GetRef<uint32_t>("CTheZones", "ZonesRevealed");
-	static inline auto ZonesVisited = (bool*)AddressSetter::Get("CTheZones", "ZonesVisited"); // ZonesVisited[100] ZonesVisited[10][10]
+	static inline auto& ZonesRevealed = **(uint32_t**)AddressSetter::Get("CTheZones", "ZonesRevealed", 1);
+	static inline auto ZonesVisited = *(bool**)AddressSetter::Get("CTheZones", "ZonesVisited", 3); // ZonesVisited[100] ZonesVisited[10][10]
 
 	static bool Save()
 	{
@@ -62,7 +62,8 @@ public:
 	}
 	static const char* GetZoneNameByIndex(int index)
 	{
-		return ((const char* (__cdecl*)(int))(AddressSetter::Get("CTheZones", "GetZoneNameByIndex")))(index);
+		static const char* (__cdecl* fn)(int) = injector::GetBranchDestination(AddressSetter::Get("CTheZones", "GetZoneNameByIndex")).get();
+		return fn(index);
 	}
 	static int GetZoneNumberByName(const char* name)
 	{

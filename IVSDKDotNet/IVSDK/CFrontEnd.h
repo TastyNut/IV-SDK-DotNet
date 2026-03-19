@@ -1,8 +1,8 @@
 class CFrontEnd
 {
 public:
-	static inline auto& g_iUserWaypointID = AddressSetter::GetRef<int32_t>("CFrontEnd", "g_iUserWaypointID");
-	static inline auto& vMapCursor = AddressSetter::GetRef<CVector2D>("CFrontEnd", "vMapCursor");
+	static inline auto& g_iUserWaypointID = **(int32_t**)AddressSetter::Get("CFrontEnd", "g_iUserWaypointID", 2);
+	static inline auto& vMapCursor = **(CVector2D**)AddressSetter::Get("CFrontEnd", "vMapCursor", 2);
 
 	static void SwitchOnWaypoint(int unk_8, float x, float y, bool snapToHoveringBlip, CVector* outPos)
 	{

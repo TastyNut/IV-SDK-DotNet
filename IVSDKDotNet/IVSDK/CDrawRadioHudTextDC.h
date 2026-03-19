@@ -17,7 +17,8 @@ public:
 	// same as CDrawSpriteDC but with different params?
 	CDrawRadioHudTextDC(tRadioHudTextPos* pos, CSprite2d sprite, CRGBA color)
 	{
-		((void(__thiscall*)(CDrawRadioHudTextDC*, tRadioHudTextPos*, CSprite2d, CRGBA))(AddressSetter::Get("CDrawRadioHudTextDC", "CDrawRadioHudTextDC")))(this, pos, sprite, color);
+		static void(__thiscall* fn)(CDrawRadioHudTextDC*, tRadioHudTextPos*, CSprite2d, CRGBA) = injector::GetBranchDestination(AddressSetter::Get("CDrawRadioHudTextDC", "CDrawRadioHudTextDC")).get();
+		fn(this, pos, sprite, color);
 	}
 };
 VALIDATE_SIZE(CDrawRadioHudTextDC, 0x30);

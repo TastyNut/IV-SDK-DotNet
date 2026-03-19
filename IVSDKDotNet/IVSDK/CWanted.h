@@ -1,6 +1,6 @@
 class CWanted
 {
 public:
-	static inline auto& MaximumWantedLevel = AddressSetter::GetRef<uint32_t>("CWanted", "MaximumWantedLevel");
-	static inline auto& nMaximumWantedLevel = AddressSetter::GetRef<uint32_t>("CWanted", "nMaximumWantedLevel");
+	static inline auto& MaximumWantedLevel = **(uint32_t**)AddressSetter::Get("CWanted", "MaximumWantedLevel", 2);
+	static inline auto& nMaximumWantedLevel = **(uint32_t**)AddressSetter::Get("CWanted", "nMaximumWantedLevel", 2);
 };

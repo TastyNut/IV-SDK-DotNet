@@ -173,10 +173,10 @@ VALIDATE_OFFSET(tHandlingData, m_pBoatHandling, 0x100);
 class cHandlingDataMgr
 {
 public:
-	static inline tHandlingData* HandlingData = (tHandlingData*)AddressSetter::Get("cHandlingDataMgr", "HandlingData"); // HandlingData[160]
-	static inline tHandlingData* BikeHandlingData = (tHandlingData*)AddressSetter::Get("cHandlingDataMgr", "BikeHandlingData"); // BikeHandlingData[40]
-	static inline tHandlingData* FlyingHandlingData = (tHandlingData*)AddressSetter::Get("cHandlingDataMgr", "FlyingHandlingData"); // FlyingHandlingData[40]
-	static inline tHandlingData* BoatHandlingData = (tHandlingData*)AddressSetter::Get("cHandlingDataMgr", "BoatHandlingData"); // BoatHandlingData[40]
+	static inline tHandlingData* HandlingData = *(tHandlingData**)AddressSetter::Get("cHandlingDataMgr", "HandlingData", 2); // HandlingData[160]
+	static inline tHandlingData* BikeHandlingData = *(tHandlingData**)AddressSetter::Get("cHandlingDataMgr", "BikeHandlingData", 1); // BikeHandlingData[40]
+	static inline tHandlingData* FlyingHandlingData = *(tHandlingData**)AddressSetter::Get("cHandlingDataMgr", "FlyingHandlingData", 2); // FlyingHandlingData[40]
+	static inline tHandlingData* BoatHandlingData = *(tHandlingData**)AddressSetter::Get("cHandlingDataMgr", "BoatHandlingData", 1); // BoatHandlingData[40]
 
 	static void Initialise()
 	{
@@ -188,7 +188,7 @@ public:
 	}
 	static tHandlingData* GetHandlingData(int id)
 	{
-		return ((tHandlingData*(__cdecl*)(int))(AddressSetter::Get("cHandlingDataMgr", "GetHandlingData")))(id);
+		return &HandlingData[id];
 	}
 	static int GetHandlingId(char* handlingName)
 	{

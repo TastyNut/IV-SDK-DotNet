@@ -30,6 +30,8 @@ namespace plugin
 	};
 	static eGameVersion gameVer = VERSION_NONE;
 	void gameStartupEvent();
+
+	static HANDLE hInitializationDone;
 }
 
 #include "..\INI.h"

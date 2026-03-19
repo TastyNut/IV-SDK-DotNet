@@ -7,7 +7,8 @@ public:
 	}
 	static void CloseFile(uint8_t* file)
 	{
-		((void(__cdecl*)(uint8_t*))(AddressSetter::Get("CFileMgr", "CloseFile")))(file);
+		static void (__cdecl* fn)(uint8_t*) = injector::GetBranchDestination(AddressSetter::Get("CFileMgr", "CloseFile")).get();
+		return fn(file);
 	}
 	// 2nd param usually 1
 	static char* LoadLine(uint8_t* file, int unk)

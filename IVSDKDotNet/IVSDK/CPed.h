@@ -123,6 +123,8 @@ public:
 	uint32_t* m_pEventScanner;
 };
 
+// TODO: CPed has a different layout on CE
+
 class CPed : public CPhysical
 {
 public:																	// 000-210

@@ -27,7 +27,7 @@
 #include <ostream>
 
 #define FINI_SAFE
-#define FINI_BUFFER_SIZE 256
+#define FINI_BUFFER_SIZE 1024
 
 #if __cplusplus >= 201103L
   #include <unordered_map>

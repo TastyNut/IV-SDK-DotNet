@@ -17,26 +17,26 @@ VALIDATE_OFFSET(tControlRemapInfo, m_sAltControlName, 0x74);
 class CMenuManager
 {
 public:
-	static inline uint32_t& m_bInvertMouseX = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bInvertMouseX");
-	static inline uint32_t& m_bInvertRightStickX = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bInvertRightStickX");
-	static inline uint32_t& m_bAutoSave = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bAutoSave");
-	static inline uint32_t& m_bClipCapture = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bClipCapture");
-	static inline uint32_t& m_bHeliMouseControls = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bHeliMouseControls");
-	static inline uint32_t& m_bHudOn = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_bHudOn");
-	static inline uint32_t& m_nRadarMode = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nRadarMode");
+	static inline uint32_t& m_bInvertMouseX = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bInvertMouseX", 13);
+	static inline uint32_t& m_bInvertRightStickX = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bInvertRightStickX", 10);
+	static inline uint32_t& m_bAutoSave = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bAutoSave", 13);
+	static inline uint32_t& m_bClipCapture = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bClipCapture", 2);
+	static inline uint32_t& m_bHeliMouseControls = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bHeliMouseControls", 13);
+	static inline uint32_t& m_bHudOn = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_bHudOn", 13);
+	static inline uint32_t& m_nRadarMode = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nRadarMode", 13);
 
-	static inline uint32_t& m_nMouseSensitivity = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nMouseSensitivity");
+	static inline uint32_t& m_nMouseSensitivity = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nMouseSensitivity", 13);
 
 	// written to float values when changed in menu
-	static inline uint32_t& m_nBrightness = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nBrightness");
-	static inline uint32_t& m_nContrast = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nContrast");
-	static inline uint32_t& m_nSaturation = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nSaturation");
+	static inline uint32_t& m_nBrightness = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nBrightness", 13);
+	static inline uint32_t& m_nContrast = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nContrast", 13);
+	static inline uint32_t& m_nSaturation = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nSaturation", 13);
 
-	static inline uint32_t& m_nVehicleDensity = AddressSetter::GetRef<uint32_t>("CMenuManager", "m_nVehicleDensity");
+	static inline uint32_t& m_nVehicleDensity = **(uint32_t**)AddressSetter::Get("CMenuManager", "m_nVehicleDensity", 1);
 
-	static inline float& m_fBrightness = AddressSetter::GetRef<float>("CMenuManager", "m_fBrightness");
-	static inline float& m_fContrast = AddressSetter::GetRef<float>("CMenuManager", "m_fContrast");
-	static inline float& m_fSaturation = AddressSetter::GetRef<float>("CMenuManager", "m_fSaturation");
+	static inline float& m_fBrightness = **(float**)AddressSetter::Get("CMenuManager", "m_fBrightness", 4);
+	static inline float& m_fContrast = **(float**)AddressSetter::Get("CMenuManager", "m_fContrast", 4);
+	static inline float& m_fSaturation = **(float**)AddressSetter::Get("CMenuManager", "m_fSaturation", 4);
 
-	static inline tControlRemapInfo* m_aRemapOptions = (tControlRemapInfo*)AddressSetter::Get("CMenuManager", "m_aRemapOptions");
+	static inline tControlRemapInfo* m_aRemapOptions = *(tControlRemapInfo**)AddressSetter::Get("CMenuManager", "m_aRemapOptions", 3);
 };

@@ -3,13 +3,15 @@
 
 namespace IVSDKDotNet
 {
+	static uint32_t s_pSettings = *(uint32_t*)AddressSetter::Get("CMenuManager", "m_bInvertMouseX", 13);
+
 	// - - - Methods / Functions - - -
 	uint32_t IVMenuManager::GetSetting(eSettings setting)
 	{
-		return AddressSetter::GetRef<uint32_t>(0xCC7A00 + (uint32_t)setting, 0xCFC0D0 + (uint32_t)setting, 0x0 + (uint32_t)setting); // Needs address for CE, perhaps should also be moved to the configs?
+		return *(uint32_t*)(s_pSettings + (uint32_t)setting);
 	}
 	void IVMenuManager::SetSetting(eSettings setting, uint32_t value)
 	{
-		AddressSetter::GetRef<uint32_t>(0xCC7A00 + (uint32_t)setting, 0xCFC0D0 + (uint32_t)setting, 0x0 + (uint32_t)setting) = value; // Needs address for CE, perhaps should also be moved to the configs?
+		injector::WriteMemory(s_pSettings + (uint32_t)setting, value, true);
 	}
 }

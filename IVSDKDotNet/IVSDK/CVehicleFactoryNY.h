@@ -17,4 +17,4 @@ public:
 
 };
 
-static CVehicleFactoryNY*& VehicleFactory = AddressSetter::GetRef<CVehicleFactoryNY*>("CVehicleFactory", "VehicleFactory");
+static CVehicleFactoryNY*& VehicleFactory = **(CVehicleFactoryNY***)AddressSetter::Get("CVehicleFactory", "VehicleFactory", 2);

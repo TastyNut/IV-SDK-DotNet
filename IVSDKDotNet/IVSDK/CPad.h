@@ -54,4 +54,4 @@ VALIDATE_OFFSET(CPad, m_bIsUsingKeyboardForHeli, 0x328D);
 VALIDATE_OFFSET(CPad, m_nLastUpdateTime, 0x3A6C);
 VALIDATE_OFFSET(CPad, m_aValues, 0x2698);
 
-CPad* Pads = (CPad*)AddressSetter::Get("CPad", "Pads"); // Pads[4]; 0 = player 1, 1 = player 2, 2 = debug, 3 = unknown
+CPad* Pads = *(CPad**)AddressSetter::Get("CPad", "Pads", 8); // Pads[4]; 0 = player 1, 1 = player 2, 2 = debug, 3 = unknown
