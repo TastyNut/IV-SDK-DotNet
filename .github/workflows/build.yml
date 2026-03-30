@@ -25,6 +25,18 @@ jobs:
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
+      - name: Install DirectX SDK
+        run: |
+          choco install directx-sdk -y
+
+      - name: Set DirectX SDK environment variables
+        shell: powershell
+        run: |
+          $dxPath = "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)"
+          echo "DXSDK_DIR=$dxPath\" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "INCLUDE=$dxPath\Include;$env:INCLUDE" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "LIB=$dxPath\Lib\x86;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Restore NuGet packages
         run: nuget restore IVSDKDotNet.sln
 
