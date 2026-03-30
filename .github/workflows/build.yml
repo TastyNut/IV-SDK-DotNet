@@ -1,0 +1,43 @@
+name: Build IVSDKDotNet
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        configuration: [Release]
+        platform: [x86]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore IVSDKDotNet.sln
+
+      - name: Build solution
+        run: msbuild IVSDKDotNet.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /m
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVSDKDotNet-${{ matrix.configuration }}-${{ matrix.platform }}
+          path: |
+            **/Release/*.asi
+            **/Release/*.dll
+            **/Release/*.ini
+            **/Release/*.json
+            **/Release/*.xml
